@@ -1,0 +1,23 @@
+{
+  "name": "ph-address",
+  "version": "1.0.0",
+  "description": "Philippine addresses with PSGC codes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kosinix/ph-address.git"
+  },
+  "keywords": [],
+  "author": "Nico Amarilla",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kosinix/ph-address/issues"
+  },
+  "homepage": "https://github.com/kosinix/ph-address#readme",
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
+}
