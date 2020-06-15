@@ -33,6 +33,6 @@ fs.createReadStream('./data/psgc.csv', {encoding: 'utf8'})
     })
     .on('end', () => {
         // console.log(barangays);
-        fs.writeFileSync('./data/cities-muns.json', JSON.stringify(barangays), { encoding:'utf8'})
+        fs.writeFileSync('./data/cities-muns.json', JSON.stringify(cityMuns), { encoding:'utf8'})
         fs.writeFileSync('./data/barangays.json', JSON.stringify(barangays), { encoding:'utf8'})
     });
