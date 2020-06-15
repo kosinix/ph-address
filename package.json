@@ -19,5 +19,8 @@
   "homepage": "https://github.com/kosinix/ph-address#readme",
   "dependencies": {
     "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "csv-parser": "^2.3.3"
   }
 }
