@@ -26,6 +26,20 @@ Include it:
     console.log(phAddress.regions)
     
 ## Usage
+##### phAddress.find($keywords, $limit=10)
+Find address starting from barangay level with a given keywords
+
+    console.log(phAddress.find('brgy 168'))
+    
+returns
+
+    [
+        { 
+            id: '133901168',
+            name: 'Barangay 168, Tondo I/II, NCR, City Of Manila, First District' 
+        } 
+    ]
+
 
 ##### phAddress.groupedCitiesMunsByProvince
 Return object containing cities/municipalities with province code as key. 

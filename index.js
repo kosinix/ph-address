@@ -9,6 +9,7 @@ const provinces = require('./provinces');
 const citiesMuns = require('./cities-muns');
 const citiesNcr = require('./cities-ncr');
 const barangays = require('./barangays');
+const phAddresses = require('./data/ph-addresses.json');
 const groupedProvincesByRegion = lodash.groupBy(provinces, (o) => {
     return o.regCode;
 });
@@ -19,104 +20,82 @@ const groupedBarangaysByCitiesMuns = lodash.groupBy(barangays, (o) => {
     return o.cityMunCode;
 });
 
-const find = (search)=>{
-    try{
-
+const find = (search, limit = 10) => {
+    try {
         let keys = search.split(',')
         keys = lodash.map(keys, (o) => {
             o = lodash.trim(o)
-            o = o.replace(/(brgy\.)|(brgy)/, 'Barangay')
+            o = o.replace(/(brgy\.)|(brgy)/, 'Barangay') // Expand abbreviation
             return new RegExp(o, "i")
-
         })
 
-        // Our address returned starts from bgy level
-        let query = {
-            level: 'Bgy'
-        }
-        if(keys.length === 0){
+        let addresses = []
+        if (keys.length === 0) {
+            let found1 = lodash.filter(phAddresses, (o) => {
+                return o.level === 'Bgy'
+            })
+            addresses = addresses.concat(found1)
+        } else if (keys.length === 1) {
+            let found1 = lodash.filter(phAddresses, (o) => {
+                return lodash.get(o, 'name', '').match(keys[0]) && o.level === 'Bgy'
+            })
+            addresses = addresses.concat(found1)
+            let found2 = lodash.filter(phAddresses, (o) => {
+                return lodash.get(o, 'cityMunName', '').match(keys[0]) && o.level === 'Bgy'
+            })
+            addresses = addresses.concat(found2)
+            let found3 = lodash.filter(phAddresses, (o) => {
+                return lodash.get(o, 'provName', '').match(keys[0]) && o.level === 'Bgy'
+            })
+            addresses = addresses.concat(found3)
 
-        }
-        if(keys.length === 1){
-            query = {
-                $or: [
-                    {
-                        $and: [
-                            {name: keys[0]},
-                            {level: 'Bgy'},
-                        ]
-                    },
-                    {
-                        $and: [
-                            {cityMunName: keys[0]},
-                            {level: 'Bgy'},
-                        ]
-                    },
-                    {
-                        $and: [
-                            {provName: keys[0]},
-                            {level: 'Bgy'},
-                        ]
-                    }
-                ]
+            if (keys[0].source.match(/([\w]+ city)/i)) {
+                let custom = keys[0].source.replace(/ city/i, '')
+                custom = `City of ${custom}`
+                let found4 = lodash.filter(phAddresses, (o) => {
+                    return lodash.get(o, 'cityMunName', '').match(new RegExp(custom, 'i')) && o.level === 'Bgy'
+                })
+                addresses = addresses.concat(found4)
             }
+        } else if (keys.length === 2) {
+            let found1 = lodash.filter(phAddresses, (o) => {
+                return lodash.get(o, 'name', '').match(keys[0]) && lodash.get(o, 'cityMunName', '').match(keys[1]) && o.level === 'Bgy'
+            })
+            addresses = addresses.concat(found1)
+            let found2 = lodash.filter(phAddresses, (o) => {
+                return lodash.get(o, 'cityMunName', '').match(keys[0]) && lodash.get(o, 'provName', '').match(keys[1]) && o.level === 'Bgy'
+            })
+            addresses = addresses.concat(found2)
 
-        } else if (keys.length === 2){
-            query = {
-                $or: [
-                    {
-                        $and: [
-                            {name: keys[0]},
-                            {level: 'Bgy'},
-                            {cityMunName: keys[1]}
-                        ],
-                    },
-                    {
-                        $and: [
-
-                            {level: 'Bgy'},
-                            {cityMunName: keys[0]},
-                            {provName: keys[1]}
-                        ],
-                    },
-                ]
-            }
         } else {
-            query = {
-                $or: [
-                    {
-                        $and: [
-                            {name: keys[0]},
-                            {level: 'Bgy'},
-                            {cityMunName: keys[1]},
-                            {provName: keys[2]},
-                        ],
-                    },
-                    {
-                        $and: [
-                            {name: keys[0]},
-                            {level: 'Bgy'},
-                            {cityMunName: keys[1]},
-                        ],
-                    },
-                ]
-            }
+
+            let found1 = lodash.filter(phAddresses, (o) => {
+                return lodash.get(o, 'name', '').match(keys[0]) && lodash.get(o, 'cityMunName', '').match(keys[1]) && lodash.get(o, 'provName', '').match(keys[2]) && o.level === 'Bgy'
+            })
+            addresses = addresses.concat(found1)
+            let found2 = lodash.filter(phAddresses, (o) => {
+                return lodash.get(o, 'name', '').match(keys[0]) && lodash.get(o, 'cityMunName', '').match(keys[1]) && o.level === 'Bgy'
+            })
+            addresses = addresses.concat(found2)
+
         }
-        console.log(util.inspect(query, false, null, true /* enable colors */))
-        // raw ops
-        let addresses = await db.main.Address.collection.find(query).limit(10).toArray()
-        addresses = lodash.map(addresses, (o)=>{
+        if (limit > -1) {
+            addresses = addresses.slice(0, limit)
+        }
+        return lodash.map(addresses, (o) => {
             let full = [o.name]
-            if(o.cityMunName){
+            if (o.cityMunName) {
                 full.push(o.cityMunName)
             }
-            if(o.provName){
+            if (o.provName) {
                 full.push(o.provName)
             }
-            return full.join(', ')
+            return {
+                id: o.code,
+                name: full.join(', ')
+            }
         })
-        return res.send(addresses)
-    } catch (err){
+    } catch (err) {
         throw  err
     }
 }
