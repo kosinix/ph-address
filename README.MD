@@ -125,7 +125,9 @@ Return array of objects containing NCR cities:
 
 ### Hierarchy of address: 
 * Regions
-* Provinces (Does not exist for Region 13 - NCR )
+* Provinces (Does not exist for NCR)
+* Districts (NCR only - same level as province but not a province)
 * Cities and Municipalities
+* Sub Municipalities (NCR only)
 * Barangay
 
