@@ -1,3 +1,9 @@
+/**
+ * Convert psgc.csv into ph-addresses.json
+ *
+ * Run: node test/psgc.js
+ * */
+
 const csv = require('csv-parser')
 const fs = require('fs')
 const lodash = require('lodash')
@@ -37,8 +43,33 @@ fs.createReadStream('./data/psgc.csv', {encoding: 'utf8'})
             })
         }
 
-        if (level === 'City' || level === 'Mun') {
+        // Districts exist only in NCR. Same level as province but not a province.
+        if (level === 'Dist') {
             name = toTitleCase(name)
+            name = name.replace('Ncr', 'NCR')
+            name = name.replace(' (Not A Province)', '')
+            provinces.push({
+                code: code,
+                name: name,
+                level: level,
+                regCode: regCode,
+                provCode: provCode,
+                cityMunCode: cityMunCode,
+            })
+        }
+
+        // SubMuns exists only in the City of Manila. Its the same level as a municipality but not a municipality (because its a sub municipality wtf) :-|
+        if (level === 'City' || level === 'Mun' || level === 'SubMun') {
+            name = toTitleCase(name)
+            if(level === 'SubMun'){
+                name = name.replace('Tondo I/ii', 'Tondo I/II')
+            }
+            if(level === 'City'){
+                name = name.replace('(Capital)', '')
+                if(name.match(/City of/i)){
+                    name = name + ' (City)'
+                }
+            }
             cityMuns.push({
                 code: code,
                 name: name,
@@ -71,7 +102,7 @@ fs.createReadStream('./data/psgc.csv', {encoding: 'utf8'})
                 a.cityMunName = lodash.get(found, 'name')
             }
 
-            if(a.level === 'Bgy' || a.level === 'City' || a.level === 'Mun') {
+            if(a.level === 'Bgy' || a.level === 'City' || a.level === 'Mun' || a.level === 'SubMun') {
                 // Get province
                 found = lodash.find(provinces, (f) => {
                     return f.code === `${a.provCode}00000`
