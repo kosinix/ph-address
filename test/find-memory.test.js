@@ -1,5 +1,4 @@
-const phAddress = require('../index')
-
+const phAddress = require('../index').useMemory()
 
 phAddress.find('buenavista, guimar').then((data)=>{
     console.log(data)
@@ -7,4 +6,4 @@ phAddress.find('buenavista, guimar').then((data)=>{
     console.error(err)
 })
 
-setTimeout(()=>{}, 10000)
+setTimeout(()=>{}, 5000)

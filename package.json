@@ -18,7 +18,8 @@
   },
   "homepage": "https://github.com/kosinix/ph-address#readme",
   "dependencies": {
-    "lodash.get": "^4.4.2"
+    "lodash.get": "^4.4.2",
+    "mongodb": "^3.5.9"
   },
   "devDependencies": {
     "csv-parser": "^2.3.3"

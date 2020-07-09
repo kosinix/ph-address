@@ -110,3 +110,5 @@ package-lock.json
 tests/*
 
 data/import.txt
+
+credentials.json

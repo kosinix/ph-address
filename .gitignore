@@ -108,3 +108,5 @@ dist
 package-lock.json
 
 data/import.txt
+
+credentials.json
