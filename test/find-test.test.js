@@ -1,5 +1,10 @@
 const phAddress = require('../index')
 
 
-console.log(phAddress.find('brgy'))
+phAddress.find('buenavista, guimar').then((data)=>{
+    console.log(data)
+}).catch((err)=>{
+    console.error(err)
+})
 
+setTimeout(()=>{}, 10000)

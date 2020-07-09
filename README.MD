@@ -15,7 +15,7 @@ Install latest from GitHub:
 
 Tied to a specific version/release from GitHub:
 
-    npm install github:kosinix/ph-address#1.0.0
+    npm install github:kosinix/ph-address#2.0.0
     
 ## Quickstart
 
@@ -23,7 +23,6 @@ Include it:
 
     const phAddress = require('ph-address')
     
-    console.log(phAddress.regions)
     
 ## Usage
 ##### phAddress.find($keywords, $limit=10)

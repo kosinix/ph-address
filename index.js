@@ -1,50 +1,47 @@
 //// Core modules
+const fs = require('fs')
+const util = require('util')
+const readFileAsync = util.promisify(fs.readFile)
 
 //// External modules
-const lodash = require('lodash');
+const get = require('lodash.get');
+const lodash = {
+    get: get
+}
 
 //// Modules
-const regions = require('./regions');
-const provinces = require('./provinces');
-const citiesMuns = require('./cities-muns');
-const citiesNcr = require('./cities-ncr');
-const barangays = require('./barangays');
-const phAddresses = require('./data/ph-addresses.json');
-const groupedProvincesByRegion = lodash.groupBy(provinces, (o) => {
-    return o.regCode;
-});
-const groupedCitiesMunsByProvince = lodash.groupBy(citiesMuns, (o) => {
-    return o.provCode;
-});
-const groupedBarangaysByCitiesMuns = lodash.groupBy(barangays, (o) => {
-    return o.cityMunCode;
-});
+let phAddressesFileDataPromise = readFileAsync('./data/ph-addresses.json', {encoding: 'utf8'})
+let phAddresses = null
 
-const find = (search, limit = 10) => {
+const find = async (search, limit = 10) => {
     try {
+        if(!phAddresses){
+            let phAddressesFileData = await phAddressesFileDataPromise
+            phAddresses = JSON.parse(phAddressesFileData)
+        }
         let keys = search.split(',')
-        keys = lodash.map(keys, (o) => {
-            o = lodash.trim(o)
+        keys = keys.map((o) => {
+            o = o.trim()
             o = o.replace(/(brgy\.)|(brgy)/, 'Barangay') // Expand abbreviation
             return new RegExp(o, "i")
         })
 
         let addresses = []
         if (keys.length === 0) {
-            let found1 = lodash.filter(phAddresses, (o) => {
+            let found1 = phAddresses.filter((o) => {
                 return o.level === 'Bgy'
             })
             addresses = addresses.concat(found1)
         } else if (keys.length === 1) {
-            let found1 = lodash.filter(phAddresses, (o) => {
+            let found1 = phAddresses.filter((o) => {
                 return lodash.get(o, 'name', '').match(keys[0]) && o.level === 'Bgy'
             })
             addresses = addresses.concat(found1)
-            let found2 = lodash.filter(phAddresses, (o) => {
+            let found2 = phAddresses.filter((o) => {
                 return lodash.get(o, 'cityMunName', '').match(keys[0]) && o.level === 'Bgy'
             })
             addresses = addresses.concat(found2)
-            let found3 = lodash.filter(phAddresses, (o) => {
+            let found3 = phAddresses.filter((o) => {
                 return lodash.get(o, 'provName', '').match(keys[0]) && o.level === 'Bgy'
             })
             addresses = addresses.concat(found3)
@@ -52,28 +49,28 @@ const find = (search, limit = 10) => {
             if (keys[0].source.match(/([\w]+ city)/i)) {
                 let custom = keys[0].source.replace(/ city/i, '')
                 custom = `City of ${custom}`
-                let found4 = lodash.filter(phAddresses, (o) => {
+                let found4 = phAddresses.filter((o) => {
                     return lodash.get(o, 'cityMunName', '').match(new RegExp(custom, 'i')) && o.level === 'Bgy'
                 })
                 addresses = addresses.concat(found4)
             }
         } else if (keys.length === 2) {
-            let found1 = lodash.filter(phAddresses, (o) => {
+            let found1 = phAddresses.filter((o) => {
                 return lodash.get(o, 'name', '').match(keys[0]) && lodash.get(o, 'cityMunName', '').match(keys[1]) && o.level === 'Bgy'
             })
             addresses = addresses.concat(found1)
-            let found2 = lodash.filter(phAddresses, (o) => {
+            let found2 = phAddresses.filter((o) => {
                 return lodash.get(o, 'cityMunName', '').match(keys[0]) && lodash.get(o, 'provName', '').match(keys[1]) && o.level === 'Bgy'
             })
             addresses = addresses.concat(found2)
 
         } else {
 
-            let found1 = lodash.filter(phAddresses, (o) => {
+            let found1 = phAddresses.filter((o) => {
                 return lodash.get(o, 'name', '').match(keys[0]) && lodash.get(o, 'cityMunName', '').match(keys[1]) && lodash.get(o, 'provName', '').match(keys[2]) && o.level === 'Bgy'
             })
             addresses = addresses.concat(found1)
-            let found2 = lodash.filter(phAddresses, (o) => {
+            let found2 = phAddresses.filter((o) => {
                 return lodash.get(o, 'name', '').match(keys[0]) && lodash.get(o, 'cityMunName', '').match(keys[1]) && o.level === 'Bgy'
             })
             addresses = addresses.concat(found2)
@@ -82,7 +79,7 @@ const find = (search, limit = 10) => {
         if (limit > -1) {
             addresses = addresses.slice(0, limit)
         }
-        return lodash.map(addresses, (o) => {
+        return addresses.map((o) => {
             let full = [o.name]
             if (o.cityMunName) {
                 full.push(o.cityMunName)
@@ -101,13 +98,5 @@ const find = (search, limit = 10) => {
 }
 
 module.exports = {
-    regions: regions,
-    provinces: provinces,
-    citiesMuns: citiesMuns,
-    citiesNcr: citiesNcr,
-    barangays: barangays,
-    groupedProvincesByRegion: groupedProvincesByRegion,
-    groupedCitiesMunsByProvince: groupedCitiesMunsByProvince,
-    groupedBarangaysByCitiesMuns: groupedBarangaysByCitiesMuns,
     find: find
 }
