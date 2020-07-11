@@ -11,7 +11,6 @@ let cred = CRED.mongodb.connections.main
 const phAddress = require('../index').useMongo()
 
 let client = new MongoClient(`mongodb://${cred.username}:${cred.password}@localhost/psgc`, {
-    useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
