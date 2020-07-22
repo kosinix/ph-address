@@ -11,5 +11,8 @@ module.exports = {
     },
     useMongo: () => {
         return require('./mongo')
+    },
+    useSqlite: () => {
+        return require('./sqlite')
     }
 }

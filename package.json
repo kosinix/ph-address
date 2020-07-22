@@ -19,7 +19,9 @@
   "homepage": "https://github.com/kosinix/ph-address#readme",
   "dependencies": {
     "lodash.get": "^4.4.2",
-    "mongodb": "^3.5.9"
+    "mongodb": "^3.5.9",
+    "sequelize": "^6.3.3",
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "csv-parser": "^2.3.3"
