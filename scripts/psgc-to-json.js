@@ -1,12 +1,15 @@
 /**
- * Convert psgc.csv into ph-addresses.json
+ * Converts psgc.csv into ph-addresses.json
  *
- * Run: node test/psgc.js
+ * Run: node test/psgc-to-json.js
  * */
 
 const csv = require('csv-parser')
 const fs = require('fs')
-const lodash = require('lodash')
+const lodashGet = require('lodash.get')
+const lodash = {
+    get: lodashGet
+}
 
 let phAddresses = [];
 let provinces = [];
@@ -15,13 +18,13 @@ let cityMuns = [];
 function toTitleCase(str) {
     return str.replace(
         /\w\S*/g,
-        function(txt) {
+        function (txt) {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }
     );
 }
 
-fs.createReadStream('./data/psgc.csv', {encoding: 'utf8'})
+fs.createReadStream('./data/psgc.csv', { encoding: 'utf8' })
     .pipe(csv({}))
     .on('data', (data) => {
         let code = data['Code']
@@ -61,12 +64,12 @@ fs.createReadStream('./data/psgc.csv', {encoding: 'utf8'})
         // SubMuns exists only in the City of Manila. Its the same level as a municipality but not a municipality (because its a sub municipality wtf) :-|
         if (level === 'City' || level === 'Mun' || level === 'SubMun') {
             name = toTitleCase(name)
-            if(level === 'SubMun'){
+            if (level === 'SubMun') {
                 name = name.replace('Tondo I/ii', 'Tondo I/II')
             }
-            if(level === 'City'){
+            if (level === 'City') {
                 name = name.replace('(Capital)', '')
-                if(name.match(/City of/i)){
+                if (name.match(/City of/i)) {
                     name = name + ' (City)'
                 }
             }
@@ -89,31 +92,38 @@ fs.createReadStream('./data/psgc.csv', {encoding: 'utf8'})
             cityMunCode: cityMunCode,
             provName: '',
             cityMunName: '',
+            full: name,
         })
 
     })
     .on('end', () => {
-        phAddresses = lodash.map(phAddresses, (a) => {
-            if(a.level === 'Bgy') {
+        phAddresses = phAddresses.map((a) => {
+            if (a.level === 'Bgy') {
                 // Get barangay municipality or city
-                let found = lodash.find(cityMuns, (f) => {
+                let found = cityMuns.find((f) => {
                     return f.code === `${a.cityMunCode}000`
                 })
                 a.cityMunName = lodash.get(found, 'name')
+                if (a.cityMunName) {
+                    a.full += ', ' + a.cityMunName
+                }
             }
 
-            if(a.level === 'Bgy' || a.level === 'City' || a.level === 'Mun' || a.level === 'SubMun') {
+            if (a.level === 'Bgy' || a.level === 'City' || a.level === 'Mun' || a.level === 'SubMun') {
                 // Get province
-                found = lodash.find(provinces, (f) => {
+                found = provinces.find((f) => {
                     return f.code === `${a.provCode}00000`
                 })
                 a.provName = lodash.get(found, 'name')
+                if (a.provName) {
+                    a.full += ', ' + a.provName
+                }
             }
 
             return a
         })
         // console.log(barangays.length);
         // console.log(cityMuns.length);
-        fs.writeFileSync('./data/ph-addresses.json', JSON.stringify(phAddresses), {encoding: 'utf8'})
+        fs.writeFileSync('./data/ph-addresses.json', JSON.stringify(phAddresses), { encoding: 'utf8' })
         // fs.writeFileSync('./data/barangays.json', JSON.stringify(barangays), { encoding:'utf8'})
     });
