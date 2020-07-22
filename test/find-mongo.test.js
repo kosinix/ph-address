@@ -1,3 +1,8 @@
+/**
+ * Usage
+ * 
+ * node test/find-mongo.test.js
+ */
 //// Core modules
 
 
@@ -24,5 +29,4 @@ client.connect().then(()=>{
     })
 })
 
-setTimeout(()=>{}, 5000)
 

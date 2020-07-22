@@ -5,5 +5,3 @@ phAddress.find('buenavista, guimar').then((data)=>{
 }).catch((err)=>{
     console.error(err)
 })
-
-setTimeout(()=>{}, 5000)
