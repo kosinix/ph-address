@@ -4,6 +4,7 @@
   "description": "Philippine addresses with PSGC codes.",
   "main": "index.js",
   "scripts": {
+    "postinstall": "node ./scripts/psgc-to-json.js && node ./scripts/json-to-sqlite.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
