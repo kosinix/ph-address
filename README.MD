@@ -53,3 +53,29 @@ returns
 * Sub Municipalities (NCR only)
 * Barangay
 
+## Development
+
+`git clone {path to repo}`
+
+`cd ph-address`
+
+`npm install`
+
+
+## Updating the PSGC CSV File
+This module includes the latest PSGC data (data/psgc.csv) during the module's publishing.
+If you find the data obsolete and wish to manually update, do the following:
+
+* Download PSGC database here: https://psa.gov.ph/classification/psgc/
+
+* Open in MS Excel, go to PSGC worksheet, save as CSV.
+
+* Open in Notepad++, convert to UTF-8 without BOM.
+
+* Copy to data/psgc.csv
+
+
+The `psgc.csv` is used by scripts found in `scripts/*` directory to generate the database files. The scripts execute during postinstall hook. You can manually run the scripts. 
+
+
+
