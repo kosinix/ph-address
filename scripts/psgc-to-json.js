@@ -1,7 +1,10 @@
 /**
- * Converts psgc.csv into ph-addresses.json
+ * Converts data/psgc.csv into data/ph-addresses.json
  *
- * Run: node test/psgc-to-json.js
+ * Run: node scripts/psgc-to-json.js
+ * 
+ * To import to mongodb: 
+ *  mongoimport --uri="mongodb://[username]:[password]@127.0.0.1:27017/[db]?authSource=[authDb]" --collection=addresses --file=[path to /ph-address/data/ph-addresses.json] --jsonArray --drop
  * */
 
 const csv = require('csv-parser')

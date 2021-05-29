@@ -1,7 +1,9 @@
 /**
- * Converts ph-addresses.json into ph-addresses.db
+ * Converts data/ph-addresses.json into data/ph-addresses.db
+ * Note: You must run scripts/psgc-to-json.js first to generate ph-addresses.json
+ * 
  *
- * Run: node test/json-to-sqlite.js
+ * Run: node scripts/json-to-sqlite.js
  * */
 
 const fs = require('fs')
@@ -21,7 +23,7 @@ try {
             return ''
         }
     }
-    
+
     let rows = phAddresses.map((a, i) => {
         return `("${e(a.code)}", "${e(a.name)}", "${e(a.level)}", "${e(a.regCode)}", "${e(a.provCode)}", "${e(a.cityMunCode)}", "${e(a.provName)}", "${e(a.cityMunName)}", "${e(a.full)}")`
     })
@@ -30,11 +32,17 @@ try {
     let query = 'INSERT INTO addresses (code, name, level, regCode, provCode, cityMunCode, provName, cityMunName, full) VALUES ' + values
 
     db.serialize(function () {
-        db.run('DROP TABLE addresses')
+        db.run('DROP TABLE IF EXISTS addresses')
         db.run('CREATE TABLE `addresses` ( `id`	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, `code`	TEXT, `name`	TEXT, `level`	TEXT, `regCode`	TEXT, `provCode`	TEXT, `cityMunCode`	TEXT, `provName`	TEXT, `cityMunName`	TEXT, `full`	TEXT        )')
-        db.run(query, (err) => console.log(err));
+        db.run(query, function (_, err) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.log('Done.');
+        });
     });
-    fs.writeFileSync('./data/ph-addresses.sql', query, { encoding: 'utf8' })
+    // fs.writeFileSync('./data/ph-addresses.sql', query, { encoding: 'utf8' })
 
 } catch (err) {
     console.log(err)
