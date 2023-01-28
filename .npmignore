@@ -110,5 +110,6 @@ package-lock.json
 tests/*
 
 data/import.txt
+data/ph-addresses.*
 
 credentials.json

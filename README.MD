@@ -11,30 +11,32 @@ Install from NPM:
 
 Install latest from GitHub:
 
-    npm install github:kosinix/ph-address
+    npm install github:kosinix/ph-address --omit=dev
 
 Tied to a specific version/release from GitHub:
 
-    npm install github:kosinix/ph-address#2.0.0
+    npm install github:kosinix/ph-address#3.0.0 --omit=dev
     
 ## Quickstart
 
 Include it:
 
-    const phAddress = require('../index').useMemory()
-    
-    phAddress.find('brgy 168').then((data)=>{
-        console.log(data)
-    }).catch((err)=>{
-        console.error(err)
-    })
+    const phAddress = require('../index').useSqlite();
+
+    (async () => {
+
+        const db = await phAddress.connect()
+        let addresses = await db.find('mclain')
+        console.log(addresses)
+
+    })()
     
     
 ## Usage
 ##### phAddress.find($keywords, $limit=10)
 Find address starting from barangay level with a given keywords
 
-    console.log(phAddress.find('brgy 168'))
+    console.log(db.find('brgy 168'))
     
 returns
 
@@ -52,4 +54,25 @@ returns
 * Cities and Municipalities
 * Sub Municipalities (NCR only)
 * Barangay
+
+## Development
+
+`git clone {path to repo}`
+
+`cd ph-address`
+
+`npm install`
+
+
+## Updating the PSGC CSV File
+This module includes the latest PSGC data (input/PSGC-3Q-2022-Publication-Datafile.xlsx) during the module's publishing.
+If you find the data obsolete and wish to manually update, do the following:
+
+* Download PSGC Excel file here: https://psa.gov.ph/classification/psgc/ and put it in `input` dir
+
+* Run `scripts/to-sqlite.js`. See file header comments for usage.
+
+* View database in `sqlite/ph-addresses.db` using [DB Browser for SQLite](https://sqlitebrowser.org/)
+
+* Run test: `node test/find-sqlite.test.js`
 
