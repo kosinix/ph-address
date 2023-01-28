@@ -26,8 +26,8 @@ Include it:
     (async () => {
 
         const phAddress = new PhAddress()
-        await phAddress.connect()
-        let addresses = await phAddress.find('mclain')
+        const addressFinder = await phAddress.useSqlite()
+        let addresses = await addressFinder.find('brgy 168')
         console.log(addresses)
 
     })()
@@ -37,7 +37,8 @@ Include it:
 ##### phAddress.find($keywords, $limit=10)
 Find address starting from barangay level with a given keywords
 
-    console.log(db.find('brgy 168'))
+    let addresses = await addressFinder.find('brgy 168')
+    console.log(addresses)
     
 returns
 
