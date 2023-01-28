@@ -12,20 +12,20 @@
 //// Modules
 const phAddress = require('../index').useSqlite()
 
-phAddress.find('mclain').then((data)=>{
-    console.log(data)
-}).catch((err)=>{
-    console.error(err)
-}).finally(()=>{
+    ;
+(async () => {
+    try {
+        const db = await phAddress.connect()
+        let addresses = await db.find('mclain')
+        console.log(addresses)
 
-})
+        addresses = await db.find('brgy 163')
+        console.log(addresses)
 
-phAddress.find('buenavista, guimar').then((data)=>{
-    console.log(data)
-}).catch((err)=>{
-    console.error(err)
-}).finally(()=>{
+    } catch (error) {
+        console.error(error)
+    }
+})()
 
-})
 
 

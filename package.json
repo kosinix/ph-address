@@ -19,12 +19,14 @@
   },
   "homepage": "https://github.com/kosinix/ph-address#readme",
   "dependencies": {
-    "lodash.get": "^4.4.2",
     "mongodb": "^3.5.9",
-    "sequelize": "^6.3.3",
-    "sqlite3": "^5.0.0"
+    "sequelize": "^6.28.0",
+    "sqlite3": "^5.1.4"
   },
   "devDependencies": {
-    "csv-parser": "^2.3.3"
+    "csv-parser": "^2.3.3",
+    "exceljs": "^4.3.0",
+    "lodash.chunk": "^4.2.0",
+    "lodash.get": "^4.4.2"
   }
 }
