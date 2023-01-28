@@ -17,11 +17,9 @@ const { PhAddress } = require('../index')
     try {
         const phAddress = new PhAddress()
         const addressFinder = await phAddress.useSqlite()
-        let addresses = await addressFinder.find('mclain')
+        let addresses = await addressFinder.find('brgy 163')
         console.log(addresses)
 
-        addresses = await addressFinder.find('brgy 163')
-        console.log(addresses)
 
     } catch (error) {
         console.error(error)

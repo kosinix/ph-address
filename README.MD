@@ -32,9 +32,25 @@ Include it:
 
     })()
     
+Response
+
+    [
+        {
+            name: 'Barangay 168, City of Caloocan, National Capital Region (NCR)',
+            id: '1380100168'
+        },
+        {
+            name: 'Barangay 168, Pasay City, National Capital Region (NCR)',
+            id: '1381100168'
+        },
+        {
+            name: 'Barangay 168, Tondo I/II, City of Manila, National Capital Region (NCR)',
+            id: '1380601168'
+        }
+    ]
     
 ## Usage
-##### phAddress.find($keywords, $limit=10)
+##### phAddress.find(search, minChar = 3, limit = 50, formatter = null)
 Find address starting from barangay level with a given keywords
 
     let addresses = await addressFinder.find('brgy 168')
@@ -56,6 +72,9 @@ returns
 * Cities and Municipalities
 * Sub Municipalities (NCR only)
 * Barangay
+* SGU - Special Government Unit	(BARMM)
+
+
 
 ## Development
 
