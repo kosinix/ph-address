@@ -10,16 +10,17 @@
 
 
 //// Modules
-const phAddress = require('../index').useSqlite()
+const { PhAddress } = require('../index')
 
     ;
 (async () => {
     try {
-        const db = await phAddress.connect()
-        let addresses = await db.find('mclain')
+        const phAddress = new PhAddress()
+        const addressFinder = await phAddress.useSqlite()
+        let addresses = await addressFinder.find('mclain')
         console.log(addresses)
 
-        addresses = await db.find('brgy 163')
+        addresses = await addressFinder.find('brgy 163')
         console.log(addresses)
 
     } catch (error) {

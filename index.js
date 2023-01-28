@@ -3,10 +3,8 @@
 //// External modules
 
 //// Modules
-
+const PhAddress = require('./ph-address')
 
 module.exports = {
-    useSqlite: () => {
-        return require('./sqlite/sqlite')
-    }
+    PhAddress: PhAddress
 }

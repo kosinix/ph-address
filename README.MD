@@ -21,12 +21,13 @@ Tied to a specific version/release from GitHub:
 
 Include it:
 
-    const phAddress = require('../index').useSqlite();
+    const { PhAddress } = require('../index')
 
     (async () => {
 
-        const db = await phAddress.connect()
-        let addresses = await db.find('mclain')
+        const phAddress = new PhAddress()
+        await phAddress.connect()
+        let addresses = await phAddress.find('mclain')
         console.log(addresses)
 
     })()
