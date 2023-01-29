@@ -1,5 +1,29 @@
 # PH Address
-Philippine addresses with PSGC codes.
+Philippine addresses using Philippine Standard Geographic Code (PSGC).
+
+## What is this?
+This is an npm module that you can include in your projects if you want to use Philippine addresses.
+
+## How does it work?
+
+### Backend:
+* In your database you only need to store the PSGC of the barangay. 
+* The code for a barangay is self-contained. It is a 10-digit number containing the city/municipality, province, and region.
+
+### Frontend:
+* In your front-end you need to implement an autocomplete field of the full address. See `ph-address-demo`.
+
+## Why make this?
+For web apps that need to input Philippine address, the usual implementation is:
+1. Four fields containing: region, province, city/municipality and barangay.
+1. You must provide input to these fields in a sequence. Select region, provinces are listed, select province, city/municipality is listed, select one, barangays are listed, so on and so forth.
+
+This is problematic because this is the reverse of how we fill up form for address on paper. We start with our barangay, then last is province or city.
+
+Also not everyone knows what their region is but everyone knows their barangay.
+
+### With the ph-address implementation, you only need to start typing the barangay and auto suggestions of a full address will show up. You only need an autocomplete field and perhaps a hidden field for the PSGC.
+
 
 ## Install
 
@@ -32,7 +56,21 @@ Include it:
 
     })()
     
-Response
+
+    
+
+
+## Usage
+`phAddress.find(search, minChar = 3, limit = 50, formatter = null)`
+
+Find address starting from barangay level with a given keywords
+
+    const phAddress = new PhAddress()
+    const addressFinder = await phAddress.useSqlite()
+    let addresses = await addressFinder.find('brgy 168')
+    console.log(addresses)
+    
+Response:
 
     [
         {
@@ -48,22 +86,8 @@ Response
             id: '1380601168'
         }
     ]
-    
-## Usage
-##### phAddress.find(search, minChar = 3, limit = 50, formatter = null)
-Find address starting from barangay level with a given keywords
 
-    let addresses = await addressFinder.find('brgy 168')
-    console.log(addresses)
-    
-returns
-
-    [
-        { 
-            id: '133901168',
-            name: 'Barangay 168, Tondo I/II, NCR, City Of Manila, First District' 
-        } 
-    ]
+NOTE: You can change the response format by providing your own formatter function in the find function.
 
 ### Hierarchy of address: 
 * Regions
