@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/kosinix/ph-address#readme",
   "dependencies": {
-    "mongodb": "^3.5.9",
     "sequelize": "^6.28.0",
     "sqlite3": "^5.1.4"
   },
