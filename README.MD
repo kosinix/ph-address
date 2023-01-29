@@ -15,13 +15,13 @@ Install latest from GitHub:
 
 Tied to a specific version/release from GitHub:
 
-    npm install github:kosinix/ph-address#3.0.0 --omit=dev
+    npm install github:kosinix/ph-address#3.0.1 --omit=dev
     
 ## Quickstart
 
 Include it:
 
-    const { PhAddress } = require('../index')
+    const { PhAddress } = require('ph-address')
 
     (async () => {
 
